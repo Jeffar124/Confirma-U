@@ -23,7 +23,7 @@ class ReportsView extends StatefulWidget {
 }
 
 class _ReportsViewState extends State<ReportsView> {
-  //Datos de Ejemplo TODO QUitar proximamente
+  //Datos de Ejemplo TODO Quitar proximamente
   static const _fallas = [0, 2, 4, 0, 1, 1];
   static const _statuses = [
     'Presente',

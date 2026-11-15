@@ -44,7 +44,7 @@ class _TeacherHomeScreenState extends State<TeacherHomeScreen> {
               TeacherCoursesTab(user: user),
 
               // 1: Pestaña REPORTES
-              TeacherReportsTab(),
+              TeacherReportsTab(user: user),
 
               // 2: Pestaña PERFIL (reutilizando ProfileTab si hay usuario)
               user != null

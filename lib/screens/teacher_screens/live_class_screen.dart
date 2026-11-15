@@ -4,6 +4,7 @@ import 'package:confirma_u/models/course_model.dart';
 import 'package:confirma_u/widgets/app_bar.dart';
 import 'package:flutter/material.dart';
 
+import '../../data/mock_data.dart';
 import '../../theme/app_theme.dart';
 import '../../utils/utils.dart';
 import '../../widgets/primary_button.dart';
@@ -21,13 +22,24 @@ class LiveClassScreen extends StatefulWidget {
 }
 
 class _LiveClassScreenState extends State<LiveClassScreen> {
-  static const String kDemoChallengeEmoji = '🚀';
+  static const TextStyle _stateLabelStyle = TextStyle(
+    fontSize: 11,
+    fontWeight: FontWeight.w800,
+    letterSpacing: 1.2,
+    color: AppColors.green,
+  );
+
   late int _remaining = widget.course.minutes * 60;
   int _present = 0;
   int _ticks = 0;
   Timer? _timer;
 
-  bool get _showsEmoji => widget.course.method == 'challenge';
+  bool get _isDouble => widget.course.method == 'double';
+  bool get _isChallenge => widget.course.method == 'challenge';
+  bool get _isBle => widget.course.method == 'ble';
+
+  bool get _showsEmoji => _isChallenge || _isDouble;
+  bool get _showsBle => _isBle || _isDouble;
 
   @override
   void initState() {
@@ -117,26 +129,7 @@ class _LiveClassScreenState extends State<LiveClassScreen> {
                 ),
               ),
               const Spacer(),
-              PulseBadge(
-                child: _showsEmoji
-                    ? const Text(
-                        kDemoChallengeEmoji,
-                        style: TextStyle(fontSize: 44),
-                      )
-                    : const Icon(Icons.sensors, size: 44, color: Colors.white),
-              ),
-              const SizedBox(height: 16),
-              Text(
-                _showsEmoji
-                    ? 'MOSTRANDO EL RETO'
-                    : 'TRANSMITIENDO SEÑAL DE CLASE',
-                style: const TextStyle(
-                  fontSize: 11,
-                  fontWeight: FontWeight.w800,
-                  letterSpacing: 1.2,
-                  color: AppColors.green,
-                ),
-              ),
+              _signalSection(),
               const SizedBox(height: 20),
               const Text(
                 'Tiempo restante',
@@ -189,6 +182,41 @@ class _LiveClassScreenState extends State<LiveClassScreen> {
           ),
         ),
       ),
+    );
+  }
+
+  Widget _signalSection() {
+    final emoji = _showsEmoji;
+    final ble = _showsBle;
+
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        PulseBadge(
+          child: emoji
+              ? const Text(kDemoChallengeEmoji, style: TextStyle(fontSize: 44))
+              : const Icon(Icons.sensors, size: 44, color: Colors.white),
+        ),
+        const SizedBox(height: 16),
+        Text(
+          emoji ? 'MOSTRANDO EL RETO' : 'TRANSMITIENDO SEÑAL DE CLASE',
+          style: _stateLabelStyle,
+        ),
+        if (emoji && ble) ...[
+          const SizedBox(height: 8),
+          Row(
+            mainAxisSize: MainAxisSize.min,
+            children: const [
+              Icon(Icons.sensors, size: 16, color: AppColors.green),
+              SizedBox(width: 6),
+              Text(
+                'Transmitiendo señal de clase',
+                style: TextStyle(fontSize: 12, color: AppColors.muted),
+              ),
+            ],
+          ),
+        ],
+      ],
     );
   }
 }

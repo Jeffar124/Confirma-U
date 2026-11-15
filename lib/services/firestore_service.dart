@@ -1,11 +1,9 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:confirma_u/models/attendance_model.dart';
 import 'package:confirma_u/models/course_model.dart';
+import 'package:confirma_u/models/session_model.dart';
 import 'package:confirma_u/models/student_model.dart';
 
-/// Estructura en Firestore:
-///   users/{uid}                       -> perfil (name, email, code, role)
-///   courses/{courseId}                -> curso (teacherId, studentEmails[], ...)
-///   courses/{courseId}/students/{id}  -> estudiantes inscritos
 class FirestoreService {
   FirestoreService._();
   static final instance = FirestoreService._();
@@ -16,6 +14,8 @@ class FirestoreService {
       _db.collection('users');
   CollectionReference<Map<String, dynamic>> get _courses =>
       _db.collection('courses');
+  CollectionReference<Map<String, dynamic>> get _attendances =>
+      _db.collection('attendances');
 
   // ------------------------------------------------------------------ cursos
   Stream<List<CourseModel>> teacherCourses(String uid) => _courses
@@ -96,5 +96,70 @@ class FirestoreService {
       'studentEmails': FieldValue.arrayRemove([s.email.toLowerCase()]),
     });
     await batch.commit();
+  }
+
+  // --------------------------------------------------- sesiones y asistencias
+  /// Inicia una nueva sesión de clase (docente).
+  Future<String> createSession(SessionModel session) async {
+    final ref = _courses.doc(session.courseId).collection('sessions').doc();
+    await ref.set({
+      ...session.toMap(),
+      'id': ref.id,
+    });
+    return ref.id;
+  }
+
+  /// Cierra una sesión de clase activa.
+  Future<void> closeSession(String courseId, String sessionId) async {
+    await _courses.doc(courseId).collection('sessions').doc(sessionId).update({
+      'status': 'closed',
+      'closedAt': FieldValue.serverTimestamp(),
+    });
+  }
+
+  /// Escucha la sesión activa de un curso en tiempo real.
+  Stream<SessionModel?> activeSessionStream(String courseId) {
+    return _courses
+        .doc(courseId)
+        .collection('sessions')
+        .where('status', isEqualTo: 'active')
+        .limit(1)
+        .snapshots()
+        .map((s) => s.docs.isEmpty ? null : SessionModel.fromDoc(s.docs.first));
+  }
+
+  /// Registra la asistencia confirmada de un estudiante.
+  Future<void> recordAttendance(AttendanceModel a) async {
+    final ref = _attendances.doc();
+    final batch = _db.batch();
+
+    // Guarda en la colección global para consultas rápidas de historial
+    batch.set(ref, a.toMap());
+
+    // Incrementa el contador de presentes en la sesión del curso si existe sessionId
+    if (a.sessionId.isNotEmpty) {
+      final sessionRef = _courses
+          .doc(a.courseId)
+          .collection('sessions')
+          .doc(a.sessionId);
+      batch.update(sessionRef, {
+        'presentCount': FieldValue.increment(1),
+      });
+    }
+
+    await batch.commit();
+  }
+
+  /// Stream del historial de asistencias de un estudiante en un curso específico.
+  Stream<List<AttendanceModel>> studentAttendance(
+    String courseId,
+    String studentEmail,
+  ) {
+    return _attendances
+        .where('courseId', isEqualTo: courseId)
+        .where('studentEmail', isEqualTo: studentEmail.toLowerCase())
+        .orderBy('date', descending: true)
+        .snapshots()
+        .map((s) => s.docs.map(AttendanceModel.fromDoc).toList());
   }
 }

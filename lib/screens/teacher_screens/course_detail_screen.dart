@@ -9,8 +9,8 @@ import '../../widgets/app_card.dart';
 import '../../widgets/primary_button.dart';
 import '../../widgets/secondary_button.dart';
 import 'live_class_screen.dart';
-import 'reports_view.dart';
 import 'students_tab.dart';
+import 'teacher_reports_tab.dart';
 
 class CourseDetailScreen extends StatefulWidget {
   const CourseDetailScreen({super.key, required this.courseId});
@@ -162,15 +162,11 @@ class _InfoTab extends StatelessWidget {
           onPressed: () => Navigator.push(
             context,
             MaterialPageRoute(
-              builder: (_) => Scaffold(
-                appBar: DefaultAppBar(
-                  title: 'Reporte de asistencia',
-                  subtitle: course.name,
-                ),
-                body: ReportsView(
-                  teacherId: course.teacherId,
-                  initialCourseId: course.id,
-                ),
+              builder: (_) => TeacherReportsTab(
+                teacherId: course.teacherId,
+                initialCourseId: course.id,
+                subtitle: course.name,
+                showBackButton: true,
               ),
             ),
           ),

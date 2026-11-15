@@ -5,6 +5,8 @@ import 'package:confirma_u/widgets/role_card.dart';
 import 'package:flutter/material.dart';
 
 import '../../models/user_model.dart';
+import '../../services/auth_service.dart';
+import '../Auth/login_screen.dart';
 
 class SelectRoleScreen extends StatefulWidget {
   const SelectRoleScreen({super.key});
@@ -21,7 +23,25 @@ class _SelectRoleScreenState extends State<SelectRoleScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: DefaultAppBar(title: 'Seleccionar perfil'),
+      appBar: DefaultAppBar(
+        title: 'Seleccionar perfil',
+        showBackButton: false,
+        actions: [
+          IconButton(
+            tooltip: 'Cerrar sesión',
+            icon: const Icon(Icons.logout_rounded),
+            onPressed: () async {
+              await AuthService.instance.signOut();
+              if (context.mounted) {
+                Navigator.of(context, rootNavigator: true).pushNamedAndRemoveUntil(
+                  LoginScreen.routeName,
+                  (route) => false,
+                );
+              }
+            },
+          ),
+        ],
+      ),
       body: Padding(
         padding: const EdgeInsets.all(20.0),
         child: Column(

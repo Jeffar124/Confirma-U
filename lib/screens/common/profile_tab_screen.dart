@@ -6,15 +6,27 @@ import '../../services/auth_service.dart';
 import '../../theme/app_theme.dart';
 import '../../widgets/app_card.dart';
 import '../../widgets/primary_button.dart';
+import '../../widgets/secondary_button.dart';
+import '../Auth/login_screen.dart';
+import '../teacher_screens/select_role_screen.dart';
 
 class ProfileTab extends StatelessWidget {
-  const ProfileTab({super.key, required this.user});
+  const ProfileTab({
+    super.key,
+    required this.user,
+    this.showBackButton = false,
+  });
+
   final UserModel user;
+  final bool showBackButton;
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: DefaultAppBar(title: "Perfil"),
+      appBar: DefaultAppBar(
+        title: "Perfil",
+        showBackButton: showBackButton,
+      ),
       body: ListView(
         padding: const EdgeInsets.all(20),
         children: [
@@ -71,10 +83,30 @@ class ProfileTab extends StatelessWidget {
             ),
           ),
           const SizedBox(height: 24),
+          if (user.role == UserRole.docente) ...[
+            SecondaryButton(
+              label: 'Cambiar de rol (Lobby)',
+              onPressed: () {
+                Navigator.of(context, rootNavigator: true).pushNamedAndRemoveUntil(
+                  SelectRoleScreen.routeName,
+                  (route) => false,
+                );
+              },
+            ),
+            const SizedBox(height: 12),
+          ],
           PrimaryButton(
             label: 'Cerrar sesión',
             color: AppColors.red,
-            onPressed: () => AuthService.instance.signOut(),
+            onPressed: () async {
+              await AuthService.instance.signOut();
+              if (context.mounted) {
+                Navigator.of(context, rootNavigator: true).pushNamedAndRemoveUntil(
+                  LoginScreen.routeName,
+                  (route) => false,
+                );
+              }
+            },
           ),
         ],
       ),

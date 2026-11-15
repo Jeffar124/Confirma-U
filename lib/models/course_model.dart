@@ -39,8 +39,10 @@ class CourseModel {
         return 'Proximidad';
       case 'challenge':
         return 'Reto';
-      default:
+      case 'double':
         return 'Doble';
+      default:
+        return 'Metodo Desconocido';
     }
   }
 

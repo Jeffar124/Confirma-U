@@ -1,49 +1,46 @@
+import 'package:confirma_u/models/user_model.dart';
+import 'package:confirma_u/screens/teacher_screens/reports_view.dart';
+import 'package:confirma_u/widgets/app_bar.dart';
 import 'package:flutter/material.dart';
 
-import '../../theme/app_theme.dart';
+import '../../services/auth_service.dart';
 
+/// Pantalla reutilizable de Reportes de Asistencia para docentes.
+///
+/// Se utiliza tanto en la pestaña principal de [TeacherHomeScreen]
+/// como al pulsar "Ver reporte" desde [CourseDetailScreen].
 class TeacherReportsTab extends StatelessWidget {
+  const TeacherReportsTab({
+    super.key,
+    this.user,
+    this.teacherId,
+    this.initialCourseId,
+    this.subtitle,
+    this.showBackButton = false,
+  });
+
+  final UserModel? user;
+  final String? teacherId;
+  final String? initialCourseId;
+  final String? subtitle;
+  final bool showBackButton;
+
   @override
   Widget build(BuildContext context) {
+    final uid = teacherId ??
+        user?.uid ??
+        AuthService.instance.currentUser?.uid ??
+        '';
+
     return Scaffold(
-      appBar: AppBar(
-        title: const Text(
-          'Reportes de Asistencia',
-          style: TextStyle(fontSize: 16, fontWeight: FontWeight.w700),
-        ),
-        backgroundColor: Colors.white,
-        foregroundColor: AppColors.textPrimary,
-        elevation: 0,
+      appBar: DefaultAppBar(
+        title: 'Reporte de asistencia',
+        subtitle: subtitle,
+        showBackButton: showBackButton,
       ),
-      body: Center(
-        child: Padding(
-          padding: const EdgeInsets.all(24.0),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Icon(
-                Icons.bar_chart_rounded,
-                size: 72,
-                color: AppColors.primary.withValues(alpha: 0.3),
-              ),
-              const SizedBox(height: 16),
-              const Text(
-                'Reportes y Métricas',
-                style: TextStyle(
-                  fontSize: 18,
-                  fontWeight: FontWeight.w700,
-                  color: AppColors.textPrimary,
-                ),
-              ),
-              const SizedBox(height: 8),
-              const Text(
-                'Visualiza los reportes consolidados de asistencia de tus estudiantes por curso.',
-                textAlign: TextAlign.center,
-                style: TextStyle(fontSize: 13, color: AppColors.textMuted),
-              ),
-            ],
-          ),
-        ),
+      body: ReportsView(
+        teacherId: uid,
+        initialCourseId: initialCourseId,
       ),
     );
   }
