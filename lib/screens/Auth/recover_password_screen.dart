@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
-import '../services/verification_service.dart';
-import '../theme/app_theme.dart';
-import '../utils/validator_form.dart';
-import '../widgets/app_text_field.dart';
-import '../widgets/app_bar.dart';
-import '../widgets/primary_button.dart';
-import '../widgets/send_code_button.dart';
+import '../../services/verification_service.dart';
+import '../../theme/app_theme.dart';
+import '../../utils/validator_form.dart';
+import '../../widgets/app_text_field.dart';
+import '../../widgets/app_bar.dart';
+import '../../widgets/primary_button.dart';
+import '../../widgets/send_code_button.dart';
 import 'login_screen.dart';
 
 class RecoverPasswordScreen extends StatefulWidget {
@@ -123,7 +123,7 @@ class _RecoverPasswordScreenState extends State<RecoverPasswordScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: const DefaultAppBar(title: 'Recupera tu clave'),
+      appBar: DefaultAppBar(title: 'Recupera tu clave'),
       body: Column(
         children: [
           const AuthSubtitle('Confirma tu correo y crea una nueva contraseña.'),
@@ -189,7 +189,7 @@ class _RecoverPasswordScreenState extends State<RecoverPasswordScreen> {
                         keyboardType: TextInputType.number,
                         textInputAction: TextInputAction.next,
                         inputFormatters: [
-                          FilteringTextInputFormatter.digitsOnly
+                          FilteringTextInputFormatter.digitsOnly,
                         ],
                         validator: ValidatorForm.validateCode,
                         onChanged: _refresh,
@@ -225,8 +225,9 @@ class _RecoverPasswordScreenState extends State<RecoverPasswordScreen> {
                       const SizedBox(height: 20),
                       PrimaryButton(
                         label: 'Guardar nueva clave',
-                        onPressed:
-                            (_canSubmit && !_isLoading) ? _saveButton : null,
+                        onPressed: (_canSubmit && !_isLoading)
+                            ? _saveButton
+                            : null,
                         isLoading: _isLoading,
                       ),
                     ],

@@ -16,6 +16,21 @@ class AppColors {
   static const Color textMuted = Color(0xFF6B7280);
   static const Color hint = Color(0xFF9CA3AF);
   static const Color error = Color(0xFFD32F2F);
+
+  static const green = Color(0xFF0E7C45);
+  static const greenDark = Color(0xFF075B30);
+  static const greenSoft = Color(0xFFE7F5ED);
+  static const bg = Color(0xFFF5F7F6);
+  static const text = Color(0xFF1C2421);
+  static const muted = Color(0xFF6B7772);
+  static const red = Color(0xFFB42318);
+  static const redSoft = Color(0xFFFDECEA);
+  static const amber = Color(0xFFB7791F);
+  static const amberSoft = Color(0xFFFFF4DB);
+  static const blue = Color(0xFF2563EB);
+  static const blueSoft = Color(0xFFE8EFFD);
+  static const grey = Color(0xFF7D8884);
+  static const greySoft = Color(0xFFEDF0EE);
 }
 
 class AppTheme {

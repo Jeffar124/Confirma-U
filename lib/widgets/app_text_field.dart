@@ -23,6 +23,8 @@ class AppTextField extends StatelessWidget {
     this.onFieldSubmitted,
     this.fieldKey,
     this.autofillHints,
+    this.readOnly = false,
+    this.onTap,
   });
 
   final String label;
@@ -32,12 +34,14 @@ class AppTextField extends StatelessWidget {
   final IconData? prefixIcon;
   final Widget? suffixIcon;
   final bool obscureText;
+  final bool readOnly;
   final TextInputType? keyboardType;
   final TextInputAction? textInputAction;
   final List<TextInputFormatter>? inputFormatters;
   final int? maxLength;
   final ValueChanged<String>? onChanged;
   final ValueChanged<String>? onFieldSubmitted;
+  final VoidCallback? onTap;
   final GlobalKey<FormFieldState<String>>? fieldKey;
   final Iterable<String>? autofillHints;
 
@@ -74,6 +78,8 @@ class AppTextField extends StatelessWidget {
           onChanged: onChanged,
           onFieldSubmitted: onFieldSubmitted,
           autofillHints: autofillHints,
+          readOnly: readOnly,
+          onTap: onTap,
           style: const TextStyle(fontSize: 14, color: AppColors.textPrimary),
           decoration: InputDecoration(
             hintText: hintText,
@@ -85,8 +91,10 @@ class AppTextField extends StatelessWidget {
                 ? null
                 : Icon(prefixIcon, size: 20, color: AppColors.textMuted),
             suffixIcon: suffixIcon,
-            contentPadding:
-                const EdgeInsets.symmetric(horizontal: 14, vertical: 15),
+            contentPadding: const EdgeInsets.symmetric(
+              horizontal: 14,
+              vertical: 15,
+            ),
             border: _border(AppColors.border),
             enabledBorder: _border(AppColors.border),
             focusedBorder: _border(AppColors.primary, width: 1.5),

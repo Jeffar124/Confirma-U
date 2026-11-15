@@ -2,7 +2,9 @@ import 'package:confirma_u/theme/app_theme.dart';
 import 'package:flutter/material.dart';
 
 class AppHeader extends StatelessWidget {
-  const AppHeader({String? username});
+  const AppHeader({super.key, this.username});
+
+  final String? username;
 
   Widget _circle(double size) {
     return Container(
@@ -69,6 +71,14 @@ class AppHeader extends StatelessWidget {
                       color: Colors.white,
                     ),
                   ),
+                  if (username != null && username!.trim().isNotEmpty) ...[
+                    const SizedBox(height: 8),
+                    Text(
+                      username!,
+                      style: const TextStyle(fontSize: 16, color: Colors.white),
+                      textAlign: TextAlign.center,
+                    ),
+                  ],
                 ],
               ),
             ),

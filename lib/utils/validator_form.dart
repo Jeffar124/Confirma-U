@@ -71,4 +71,7 @@ class ValidatorForm {
     if (!_fourDigitsRegExp.hasMatch(code)) return 'El código tiene 4 dígitos';
     return null;
   }
+
+  static String? requiredValidator(String? value) =>
+      (value == null || value.trim().isEmpty) ? 'Campo obligatorio' : null;
 }

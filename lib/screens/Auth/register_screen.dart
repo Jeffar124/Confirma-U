@@ -1,17 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
-import '../models/user_model.dart';
-import '../services/auth_service.dart';
-import '../services/verification_service.dart';
-import '../theme/app_theme.dart';
-import '../utils/validator_form.dart';
-import '../widgets/app_text_field.dart';
-import '../widgets/app_bar.dart';
-import '../widgets/primary_button.dart';
-import '../widgets/role_card.dart';
-import '../widgets/send_code_button.dart';
-import 'home_screen.dart';
+import '../../models/user_model.dart';
+import '../../services/auth_service.dart';
+import '../../services/verification_service.dart';
+import '../../theme/app_theme.dart';
+import '../../utils/validator_form.dart';
+import '../../widgets/app_text_field.dart';
+import '../../widgets/app_bar.dart';
+import '../../widgets/primary_button.dart';
+import '../../widgets/role_card.dart';
+import '../../widgets/send_code_button.dart';
 import 'login_screen.dart';
 
 class RegisterScreen extends StatefulWidget {
@@ -139,16 +138,17 @@ class _RegisterScreenState extends State<RegisterScreen> {
           backgroundColor: Colors.green,
         ),
       );
-      Navigator.pushNamedAndRemoveUntil(
-        context,
-        HomeScreen.routeName,
-        (route) => false,
-      );
+      // Navigator.pushNamedAndRemoveUntil(
+      //   context,
+      //   HomeScreen.routeName,
+      //   (route) => false,
+      // );
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content:
-              Text(registerResult.errorMessage ?? 'Error al crear la cuenta.'),
+          content: Text(
+            registerResult.errorMessage ?? 'Error al crear la cuenta.',
+          ),
           backgroundColor: AppColors.error,
         ),
       );
@@ -158,7 +158,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: const DefaultAppBar(title: 'Crea tu cuenta'),
+      appBar: DefaultAppBar(title: 'Crea tu cuenta'),
       body: Column(
         children: [
           AuthSubtitle(
@@ -196,7 +196,9 @@ class _RegisterScreenState extends State<RegisterScreen> {
                             isSelected: _selectedRole == UserRole.estudiante,
                             onTap: () {
                               if (_selectedRole != UserRole.estudiante) {
-                                setState(() => _selectedRole = UserRole.estudiante);
+                                setState(
+                                  () => _selectedRole = UserRole.estudiante,
+                                );
                               }
                             },
                           ),
@@ -206,7 +208,9 @@ class _RegisterScreenState extends State<RegisterScreen> {
                             isSelected: _selectedRole == UserRole.docente,
                             onTap: () {
                               if (_selectedRole != UserRole.docente) {
-                                setState(() => _selectedRole = UserRole.docente);
+                                setState(
+                                  () => _selectedRole = UserRole.docente,
+                                );
                               }
                             },
                           ),
@@ -234,12 +238,13 @@ class _RegisterScreenState extends State<RegisterScreen> {
                         keyboardType: TextInputType.number,
                         textInputAction: TextInputAction.next,
                         inputFormatters: [
-                          FilteringTextInputFormatter.digitsOnly
+                          FilteringTextInputFormatter.digitsOnly,
                         ],
-                        validator: (v) => ValidatorForm.validateInstitutionalCode(
-                          v,
-                          isTeacher: _selectedRole == UserRole.docente,
-                        ),
+                        validator: (v) =>
+                            ValidatorForm.validateInstitutionalCode(
+                              v,
+                              isTeacher: _selectedRole == UserRole.docente,
+                            ),
                         onChanged: _refresh,
                       ),
                       const SizedBox(height: 16),
@@ -324,7 +329,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                         keyboardType: TextInputType.number,
                         textInputAction: TextInputAction.done,
                         inputFormatters: [
-                          FilteringTextInputFormatter.digitsOnly
+                          FilteringTextInputFormatter.digitsOnly,
                         ],
                         validator: ValidatorForm.validateCode,
                         onChanged: _refresh,
@@ -335,8 +340,9 @@ class _RegisterScreenState extends State<RegisterScreen> {
                       const SizedBox(height: 20),
                       PrimaryButton(
                         label: 'Crear cuenta',
-                        onPressed:
-                            (_canSubmit && !_isLoading) ? _registerButton : null,
+                        onPressed: (_canSubmit && !_isLoading)
+                            ? _registerButton
+                            : null,
                         isLoading: _isLoading,
                       ),
                       const SizedBox(height: 16),
@@ -354,8 +360,9 @@ class _RegisterScreenState extends State<RegisterScreen> {
                             style: TextButton.styleFrom(
                               foregroundColor: AppColors.primary,
                               visualDensity: VisualDensity.compact,
-                              padding:
-                                  const EdgeInsets.symmetric(horizontal: 6),
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 6,
+                              ),
                               textStyle: const TextStyle(
                                 fontSize: 13,
                                 fontWeight: FontWeight.w600,

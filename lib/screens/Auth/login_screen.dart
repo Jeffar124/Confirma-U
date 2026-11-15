@@ -1,14 +1,17 @@
 import 'package:flutter/material.dart';
 
-import '../services/auth_service.dart';
-import '../theme/app_theme.dart';
-import '../utils/validator_form.dart';
-import '../widgets/app_header.dart';
-import '../widgets/app_text_field.dart';
-import '../widgets/primary_button.dart';
-import 'home_screen.dart';
+import '../../models/user_model.dart';
+import '../../services/auth_service.dart';
+import '../../services/user_service.dart';
+import '../../theme/app_theme.dart';
+import '../../utils/validator_form.dart';
+import '../../widgets/app_header.dart';
+import '../../widgets/app_text_field.dart';
+import '../../widgets/primary_button.dart';
 import 'recover_password_screen.dart';
 import 'register_screen.dart';
+import '../student_screens/student_home_screen.dart';
+import '../teacher_screens/select_role_screen.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -47,11 +50,15 @@ class _LoginScreenState extends State<LoginScreen> {
     setState(() => _isLoading = false);
 
     if (result.success) {
-      Navigator.pushNamedAndRemoveUntil(
-        context,
-        HomeScreen.routeName,
-        (route) => false,
-      );
+      final uid = AuthService.instance.currentUser?.uid;
+      if (uid != null && mounted) {
+        final userModel = await UserService.instance.getUser(uid);
+        if (!mounted) return;
+        final routeName = userModel?.role == UserRole.docente
+            ? SelectRoleScreen.routeName
+            : StudentHomeScreen.routeName;
+        Navigator.pushNamedAndRemoveUntil(context, routeName, (route) => false);
+      }
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
@@ -170,8 +177,7 @@ class _LoginScreenState extends State<LoginScreen> {
                           style: TextButton.styleFrom(
                             foregroundColor: AppColors.primary,
                             visualDensity: VisualDensity.compact,
-                            padding:
-                                const EdgeInsets.symmetric(horizontal: 6),
+                            padding: const EdgeInsets.symmetric(horizontal: 6),
                             textStyle: const TextStyle(
                               fontSize: 13,
                               fontWeight: FontWeight.w600,
